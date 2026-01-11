@@ -1,0 +1,366 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>BlackPoint Investments</title>
+<style>
+:root {
+  --bg: #0a0d12;
+  --card: #0f1419;
+  --text: #e2e8f0;
+  --muted: #94a3b8;
+  --accent: #00a3ff;
+  --success: #16a34a;
+  --danger: #ef4444;
+  --glass: rgba(255,255,255,0.04);
+  --border: rgba(255,255,255,0.08);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { 
+  font-family: 'Segoe UI', Arial, sans-serif; 
+  background: var(--bg); 
+  color: var(--text); 
+  line-height: 1.5;
+}
+
+header {
+  background: rgba(15,20,25,0.9);
+  backdrop-filter: blur(10px);
+  padding: 16px 24px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
+
+.brand {
+  font-size: 20px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+}
+
+.signed {
+  font-size: 14px;
+  color: var(--muted);
+}
+
+#loginWrap {
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #0f1419 0%, #0a0d12 100%);
+}
+
+#loginBox {
+  width: 380px;
+  background: var(--card);
+  padding: 36px;
+  border-radius: 16px;
+  border: 1px solid var(--glass);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+  text-align: center;
+}
+
+#loginBox h2 {
+  margin-bottom: 24px;
+  font-size: 24px;
+  font-weight: 700;
+}
+
+.field {
+  width: 100%;
+  padding: 14px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: #161b22;
+  color: #fff;
+  font-size: 15px;
+  margin-bottom: 16px;
+  transition: border 0.2s;
+}
+
+.field:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.forgot-pass {
+  font-size: 13px;
+  color: var(--accent);
+  cursor: pointer;
+  text-align: right;
+  margin: -8px 0 20px;
+}
+
+.btn {
+  width: 100%;
+  padding: 14px;
+  border-radius: 10px;
+  background: var(--accent);
+  color: white;
+  font-weight: 700;
+  font-size: 16px;
+  border: none;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.btn:hover {
+  background: #008cd6;
+}
+
+.wrap {
+  max-width: 1200px;
+  margin: 24px auto;
+  padding: 0 20px;
+  display: none;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 380px;
+  gap: 24px;
+}
+
+@media (max-width: 1024px) {
+  .grid { grid-template-columns: 1fr; }
+}
+
+.card {
+  background: var(--card);
+  padding: 24px;
+  border-radius: 16px;
+  border: 1px solid var(--glass);
+  backdrop-filter: blur(10px);
+}
+
+.balance {
+  font-size: 36px;
+  font-weight: 800;
+  margin: 8px 0;
+}
+
+.small {
+  font-size: 14px;
+  color: var(--muted);
+}
+
+.action-btns {
+  display: flex;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.action-btns button {
+  flex: 1;
+  padding: 12px;
+  border-radius: 10px;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+}
+
+.action-btns .withdraw {
+  background: var(--danger);
+  color: white;
+}
+
+.action-btns .deposit {
+  background: rgba(0,163,255,0.15);
+  color: var(--accent);
+  border: 1px solid var(--accent);
+}
+
+.crypto-table table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 12px;
+  font-size: 14px;
+}
+
+.crypto-table th {
+  text-align: left;
+  padding: 10px 0;
+  color: var(--muted);
+  font-weight: 500;
+}
+
+.crypto-table td {
+  padding: 12px 0;
+  border-top: 1px solid var(--border);
+}
+
+.sidepanel {
+  position: fixed;
+  right: -400px;
+  top: 0;
+  height: 100vh;
+  width: 400px;
+  background: var(--card);
+  box-shadow: -20px 0 50px rgba(0,0,0,0.6);
+  transition: right 0.3s ease;
+  z-index: 60;
+  padding: 24px;
+  border-left: 1px solid var(--glass);
+  overflow-y: auto;
+}
+
+.sidepanel.open { right: 0; }
+
+.menu-item {
+  padding: 14px 16px;
+  border-radius: 12px;
+  cursor: pointer;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  font-size: 15px;
+  transition: background 0.2s;
+}
+
+.menu-item:hover {
+  background: rgba(255,255,255,0.06);
+}
+
+.menu-item.admin-only { display: none; }
+.menu-item.admin-only.visible { display: flex; }
+
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  display: none;
+  backdrop-filter: blur(8px);
+}
+
+.modal {
+  background: var(--card);
+  padding: 32px;
+  border-radius: 16px;
+  border: 1px solid var(--glass);
+  width: 440px;
+  max-width: 90vw;
+  text-align: center;
+  position: relative;
+  animation: modalPop 0.3s ease;
+}
+
+@keyframes modalPop {
+  from { transform: scale(0.9); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+.modal .close-btn {
+  position: absolute;
+  top: 16px;
+  right: 20px;
+  font-size: 28px;
+  cursor: pointer;
+  color: var(--muted);
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: background 0.2s;
+}
+
+.modal .close-btn:hover {
+  background: rgba(255,255,255,0.1);
+}
+
+.check {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #16a34a, #22c55e);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 20px auto;
+}
+
+.check svg {
+  width: 56px;
+  height: 56px;
+  stroke: white;
+  stroke-width: 6;
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin-top: 16px;
+}
+
+textarea.field {
+  resize: vertical;
+  min-height: 100px;
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="brand">BlackPoint Investments</div>
+  <div class="signed">Signed in as <span id="signedUser">—</span> <span id="adminBadge" style="display:none; color:#ff6b4a; font-weight:bold;">(MASTER)</span></div>
+</header>
+
+<div id="loginWrap">
+  <div id="loginBox">
+    <h2>Account Login</h2>
+    <input id="username" class="field" placeholder="Username">
+    <input id="password" class="field" type="password" placeholder="Password">
+    <div class="forgot-pass" onclick="forgotPassword()">Forgot Password?</div>
+    <button class="btn" onclick="login()">Login</button>
+  </div>
+</div>
+
+<main class="wrap" id="dashboard">
+  <div class="grid">
+    <div>
+      <div class="card">
+        <div style="display:flex; justify-content:space-between; align-items:start;">
+          <div>
+            <div class="small">Total Investment Balance</div>
+            <div class="balance" id="balanceDisplay">$150,000.00</div>
+            <div class="small" style="margin-top:8px;">Available for withdrawal</div>
+          </div>
+          <div style="text-align:right;">
+            <div class="small">24h Change</div>
+            <div id="btcChange" class="small" style="font-weight:600; margin-top:4px;">—</div>
+          </div>
+        </div>
+
+        <div style="margin-top:24px; display:flex; justify-content:space-between; align-items:center;">
+          <div>
+            <div class="small">Bitcoin Price (USD)</div>
+            <div style="font-size:22px; font-weight:700; margin-top:6px;" id="btcPrice">$—</div>
+          </div>
+          <div class="settings-bar" id="openPanelBtn">☰ Menu</div>
+        </div>
+
+        <div class="action-btns">
+          <button class="withdraw" onclick="showWithdrawModal()">Withdraw Funds</button>
+          <button class="deposit" onclick="deposit()">Deposit</button>
+        </div>
+      </div>
+
+      <div class="card" style="margin-top:24px;">
+        <h3 style="margin-bottom:16
